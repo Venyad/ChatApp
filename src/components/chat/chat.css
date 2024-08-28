@@ -1,5 +1,52 @@
 .chat{
-    flex: 1;
+    flex: 2;
     border-left: 1px solid #dddddd35;
     border-right: 1px solid #dddddd35;
+    height:100%
 }
+
+.chat .top{
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #dddddd35;
+}
+
+.chat .top .user{
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+.chat .top .user img{
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+.chat .top .user .texts{
+   display: flex;
+   flex-direction: column;
+   gap: 5px;
+}
+
+.chat .top .user .texts span{
+    font-weight: bold;
+    font-size: 18px;
+ }
+
+ .chat .top .user .texts p{
+    font-weight: 300;
+    font-size: 14px;
+    color: #a5a5a5;
+ }
+
+ .chat .top .icons{
+    display: flex;
+    gap: 20px;
+ }
+
+ .chat .top .icons img{
+    width: 20px;
+    height: 20px;
+ }
