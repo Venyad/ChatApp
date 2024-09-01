@@ -4,14 +4,16 @@ import "./chat.css"
 import { useState } from 'react'
 import { useEffect } from 'react'
 import { useRef } from 'react'
-import { doc, onSnapshot } from 'firebase/firestore'
+import { arrayUnion, doc, onSnapshot, updateDoc } from 'firebase/firestore'
 import { db } from '../../lib/firebase'
 import { useChatStore } from '../../lib/chatStore'
+import { useUserStore } from '../../lib/userStore'
 const Chat = () => {
   const [chat,setChat] = useState();
   const [open, setOpen] = useState(false);
   const [text, setText] = useState("");
   const {chatId} = useChatStore();
+  const {currentUser} = useUserStore();
 
   const endRef = useRef(null)
 
@@ -32,6 +34,43 @@ const Chat = () => {
     setText((prev) => prev + e.emoji);
     setOpen(false)
   };
+
+  const handleSend = async () => {
+    if(text === "") return;
+
+    try{
+        await updateDoc(doc(db,"chats",chatId),{
+          messages:arrayUnion(
+            {
+              senderId: currentUser.id,
+              text,
+              createdAt: new Date(),
+
+            }
+          ),
+        });
+
+        const userChatsRef = doc(db, "userChats", currentUser.id)
+        const userChatsSnapshot = await getDoc(userChatsRef)
+
+        if(userChatsSnapshot.exists()){
+          const userChatsData = userChatsSnapshot.data()
+
+          const chatIndex = userChatsData.chats.findIndex(c => c.chatId === chatId)
+          userChatsData[chatIndex].lastMessage = text
+          userChatsData[chatIndex].isSeen = true
+          userChatsData[chatIndex].updatedAt = Date.now();
+
+          await updateDoc(userChatsRef,{
+            chats:userChatsData.chats,
+          })
+        }
+    }
+    catch(err){
+      console.log(err)
+    }
+  }
+
   return (
     <div className='chat'>
       <div className='top'>
@@ -49,41 +88,18 @@ const Chat = () => {
         </div>
       </div>
       <div className='center'>
-        <div className='message'>
-          <img src="avatar.png" alt="" />
+        {chat?.messages?.map(message => (
+          <div className='message own' key = {message?.createAt}>
           <div className="texts">
+          {message.img && <img src={message.img} alt="" />}
             <p>
-              Description of the Center
+              {message.text}
             </p>
-            <span>1 min ago</span>
+            {/*<span>{message}</span>*/}
           </div>
         </div>
-        <div className='message own'>
-          <div className="texts">
-            <p>
-              Description of the Center
-            </p>
-            <span>1 min ago</span>
-          </div>
-        </div>
-        <div className='message'>
-          <img src="avatar.png" alt="" />
-          <div className="texts">
-            <p>
-              Description of the Center
-            </p>
-            <span>1 min ago</span>
-          </div>
-        </div>
-        <div className='message own'>
-          <div className="texts">
-            <img src="https://www.billboard.com/wp-content/uploads/2021/12/bts-courtesy-billboard-japan-1548.jpg?w=942&h=623&crop=1" alt="" />
-            <p>
-              Description of the Center
-            </p>
-            <span>1 min ago</span>
-          </div>
-        </div>
+
+        ))}
         <div ref={endRef}></div>
       </div>
       <div className='bottom'>
@@ -100,7 +116,7 @@ const Chat = () => {
 
           </div>
         </div>
-        <button className='sendButton'>Send</button>
+        <button className='sendButton' onClick={handleSend} >Send</button>
       </div>
     </div>
   )
