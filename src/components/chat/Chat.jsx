@@ -12,7 +12,7 @@ const Chat = () => {
   const [chat,setChat] = useState();
   const [open, setOpen] = useState(false);
   const [text, setText] = useState("");
-  const {chatId} = useChatStore();
+  const {chatId, user} = useChatStore();
   const {currentUser} = useUserStore();
 
   const endRef = useRef(null)
@@ -50,21 +50,27 @@ const Chat = () => {
           ),
         });
 
-        const userChatsRef = doc(db, "userChats", currentUser.id)
+        const userIDs = [currentUser.id, user.id]
+
+        userIDs.forEach(async (id) => {
+
+
+        const userChatsRef = doc(db, "userchats", id)
         const userChatsSnapshot = await getDoc(userChatsRef)
 
         if(userChatsSnapshot.exists()){
           const userChatsData = userChatsSnapshot.data()
 
           const chatIndex = userChatsData.chats.findIndex(c => c.chatId === chatId)
-          userChatsData[chatIndex].lastMessage = text
-          userChatsData[chatIndex].isSeen = true
-          userChatsData[chatIndex].updatedAt = Date.now();
+          userChatsData.chats[chatIndex].lastMessage = text
+          userChatsData.chats[chatIndex].isSeen = id === currentUser.id ? true : false;
+          userChatsData.chats[chatIndex].updatedAt = Date.now();
 
           await updateDoc(userChatsRef,{
             chats:userChatsData.chats,
           })
         }
+      });
     }
     catch(err){
       console.log(err)
