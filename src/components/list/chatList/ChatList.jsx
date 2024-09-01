@@ -10,7 +10,7 @@ import "./chatList.css"
 const ChatList = () => {
   const [chats, setChats] = useState([]);
   const [addMode, setAddmode] = useState(false);
-  const [currentUser] = useUserStore
+  const {currentUser} = useUserStore();
 
   useEffect(() => {
     const unSub = onSnapshot(doc(db, "userchats", currentUser.id), async (res) => {
@@ -58,9 +58,9 @@ const ChatList = () => {
       </div>
       {chats.map((chat) => (
         <div className='item' key={chat.chatId}>
-          <img src="./avatar.png" alt="" />
+          <img src={chat.user.avatar || "./avatar.png" }alt="" />
           <div className='texts'>
-            <span>Jane Doe</span>
+            <span>{chat.user.username}</span>
             <p>{chat.lastMessage}</p>
           </div>
 

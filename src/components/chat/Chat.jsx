@@ -4,6 +4,8 @@ import "./chat.css"
 import { useState } from 'react'
 import { useEffect } from 'react'
 import { useRef } from 'react'
+import { doc, onSnapshot } from 'firebase/firestore'
+import { db } from '../../lib/firebase'
 const Chat = () => {
   const [open, setOpen] = useState(false)
   const [text, setText] = useState("")
@@ -12,6 +14,15 @@ const Chat = () => {
 
   useEffect(() => {
     endRef.current?.scrollIntoView({ behavior : "smooth"});
+  },[])
+
+  useEffect(() => {
+    const unSub = onSnapshot(doc(db, "chats", ), (res) => {
+      setChat(res.data())
+    })
+    return () => {
+      unSub();
+    };
   },[])
 
   const handleEmoji = e => {
