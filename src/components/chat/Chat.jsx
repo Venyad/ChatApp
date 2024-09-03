@@ -12,7 +12,7 @@ import upload from '../../lib/upload';
 //import { format } from "timeago.js";
 
 const Chat = () => {
-  const [chat, setChat] = useState();
+  const [chat, setChat] = useState({ messages: [] });
   const [open, setOpen] = useState(false);
   const [text, setText] = useState("");
   const [img, setImg] = useState({
@@ -24,7 +24,7 @@ const Chat = () => {
   const { currentUser } = useUserStore();
 
 
-  const endRef = useRef(null)
+  const endRef = useRef(null);
 
   useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -32,8 +32,8 @@ const Chat = () => {
 
   useEffect(() => {
     const unSub = onSnapshot(doc(db, "chats", chatId), (res) => {
-      setChat(res.data());
-    })
+      setChat(res.data() || { messages: [] });
+    });
     return () => {
       unSub();
     };
@@ -144,7 +144,7 @@ const Chat = () => {
       </div>
       <div className='bottom'>
         <div className='icons'>
-          <label htmlFor="file">
+          <label htmlFor="file" className={isCurrentUserBlocked || isReceiverBlocked ? "disabled" : ""}>
             <img src="/img.png" alt="" />
 
           </label>
@@ -170,4 +170,4 @@ const Chat = () => {
   );
 };
 
-export default Chat
+export default Chat;

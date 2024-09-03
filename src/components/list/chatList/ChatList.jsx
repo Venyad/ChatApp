@@ -15,9 +15,14 @@ const ChatList = () => {
   const { currentUser } = useUserStore();
   const { chatId, changeChat } = useChatStore();
 
+  console.log(chatId);
+
   useEffect(() => {
     const unSub = onSnapshot(doc(db, "userchats", currentUser.id), async (res) => {
-      const items = res.data().chats;
+      const data = res.data();
+    if (!data || !data.chats) return; 
+
+    const items = data.chats;
       const promises = items.map(async (item) => {
         const userDocRef = doc(db, "users", item.receiverId);
         const userDocSnap = await getDoc(userDocRef);
@@ -40,7 +45,8 @@ const ChatList = () => {
       return rest;
 
     });
-    const chatIndex = userChats.findIndex((item)=> item.chatId === chat.chatId);
+    const chatIndex = userChats.findIndex((item) => item.chatId === chat.chatId);
+    if (chatIndex === -1) return;
     userChats[chatIndex].isSeen = true;
     const userChatsRef = doc(db, "userchats", currentUser.id);
     try {
@@ -70,7 +76,7 @@ const ChatList = () => {
       </div>
 
       {filteredChats.map((chat) => (
-        <div className='item' key={chat.chatId} onClick={() => handleSelect(chat)}
+        <div className='item' key={chat.chatId} onClick={()=>handleSelect(chat)}
           style={{
             backgroundColor: chat?.isSeen ? "transparent" : "#5183fe",
           }}>

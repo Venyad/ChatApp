@@ -161,3 +161,18 @@
   bottom: 50px;
   left: 0;
 }
+
+.chat .bottom .icons label {
+  cursor: pointer;
+}
+
+.chat .bottom .icons label.disabled {
+  opacity: 0.5;
+  pointer-events: none; 
+  cursor: not-allowed; 
+}
+
+.chat .bottom .icons label.disabled img {
+  opacity: 0.5; 
+  cursor: not-allowed;
+}
