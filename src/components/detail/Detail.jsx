@@ -73,7 +73,7 @@ const Detail = () => {
             <img src="./arrowUp.png" alt="" />
           </div>
         </div>
-        <button>Block User</button>
+        <button onClick={handleBlock}>Block User</button>
         <button className='logout' onClick={() => auth.signOut()}>Logout</button>
       </div>
     </div>
