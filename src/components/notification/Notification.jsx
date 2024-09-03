@@ -1,6 +1,6 @@
-import React from 'react'
-import { ToastContainer } from 'react-toastify'
-import "react-toastify/dist/ReactToastify.css"
+import React from 'react';
+import { ToastContainer } from 'react-toastify';
+import "react-toastify/dist/ReactToastify.css";
 
 const Notification = () => {
   return (
@@ -10,4 +10,4 @@ const Notification = () => {
   )
 }
 
-export default Notification
+export default Notification;

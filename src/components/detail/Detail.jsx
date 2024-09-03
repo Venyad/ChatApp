@@ -6,7 +6,7 @@ import { useUserStore } from '../../lib/userStore'
 import { arrayRemove, arrayUnion, doc, updateDoc } from 'firebase/firestore'
 
 const Detail = () => {
-  const {chatId, user, isCurrentUserBlocked, isReceiverBlocked, changeBlock} = useChatStore();
+  const {chatId, user, isCurrentUserBlocked, isReceiverBlocked, changeBlock, resetChat} = useChatStore();
   const {currentUser} = useUserStore();
   const handleBlock = async () => {
     if(!user) return;
@@ -17,10 +17,15 @@ const Detail = () => {
       await updateDoc(userDocRef,{
         blocked : isReceiverBlocked ? arrayRemove(user.id) : arrayUnion(user.id),
       });
-      changeBlock()
+      changeBlock();
     }catch(err){
       console.log(err);
     }
+  };
+
+  const handleLogout = () => {
+    auth.signOut();
+    resetChat()
   };
   return (
     <div className='detail'>
@@ -95,10 +100,10 @@ const Detail = () => {
         <button onClick={handleBlock}>{
           isCurrentUserBlocked ? "You are Blocked!" : isReceiverBlocked ? "User blocked" : "Block User"
         }</button>
-        <button className='logout' onClick={() => auth.signOut()}>Logout</button>
+        <button className='logout' onClick={handleLogout}>Logout</button>
       </div>
     </div>
   )
 }
 
-export default Detail
+export default Detail;

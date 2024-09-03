@@ -1,20 +1,19 @@
 import { doc, getDoc, onSnapshot, updateDoc } from 'firebase/firestore'
 import React from 'react'
-import { useEffect } from 'react'
-import { useState } from 'react'
-import { useChatStore } from '../../../lib/chatStore'
+import { useEffect } from 'react';
+import { useState } from 'react';
+import { useChatStore } from '../../../lib/chatStore';
 import { db } from '../../../lib/firebase'
-import { useUserStore } from '../../../lib/userStore'
-import AddUser from './addUser/AddUser'
-import "./chatList.css"
+import { useUserStore } from '../../../lib/userStore';
+import AddUser from './addUser/addUser';
+import "./chatList.css";
 
 const ChatList = () => {
   const [chats, setChats] = useState([]);
-  const [addMode, setAddmode] = useState(false);
+  const [addMode, setAddMode] = useState(false);
   const [input, setInput] = useState("");
   const { currentUser } = useUserStore();
   const { chatId, changeChat } = useChatStore();
-  console.log(chatId)
 
   useEffect(() => {
     const unSub = onSnapshot(doc(db, "userchats", currentUser.id), async (res) => {
@@ -26,11 +25,11 @@ const ChatList = () => {
         const user = userDocSnap.data()
         return { ...item, user };
       });
-      const chatData = await Promise.all(promises)
-      setChats(chatData.sort((a, b) => b.updatedAt - a.updatedAt))
+      const chatData = await Promise.all(promises);
+      setChats(chatData.sort((a, b) => b.updatedAt - a.updatedAt));
     });
     return () => {
-      unSub()
+      unSub();
     }
   }, [currentUser.id]);
 
@@ -41,7 +40,7 @@ const ChatList = () => {
       return rest;
 
     });
-    const chatIndex = userChats.findIndex(item => item.chatId === chat.chatId)
+    const chatIndex = userChats.findIndex((item)=> item.chatId === chat.chatId);
     userChats[chatIndex].isSeen = true;
     const userChatsRef = doc(db, "userchats", currentUser.id);
     try {
@@ -67,24 +66,9 @@ const ChatList = () => {
           <input type="text" placeholder='Search' onChange={(e)=>setInput(e.target.value)} />
         </div>
         <img src={addMode ? "./minus.png" : "./plus.png"} alt="" className='add'
-          onClick={() => setAddmode((prev) => !prev)} />
+          onClick={() => setAddMode((prev) => !prev)} />
       </div>
-      <div className='item'>
-        <img src="./avatar.png" alt="" />
-        <div className='texts'>
-          <span>Jane Doe</span>
-          <p>Hello</p>
-        </div>
 
-      </div>
-      <div className='item'>
-        <img src="./avatar.png" alt="" />
-        <div className='texts'>
-          <span>Jane Doe</span>
-          <p>Hello</p>
-        </div>
-
-      </div>
       {filteredChats.map((chat) => (
         <div className='item' key={chat.chatId} onClick={() => handleSelect(chat)}
           style={{
@@ -108,4 +92,4 @@ const ChatList = () => {
   )
 }
 
-export default ChatList
+export default ChatList;

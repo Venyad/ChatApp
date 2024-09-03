@@ -1,7 +1,7 @@
-import React from 'react'
-import ChatList from './chatList/ChatList'
-import "./list.css"
-import Userinfo from './userinfo/Userinfo'
+import React from 'react';
+import ChatList from './chatList/ChatList';
+import "./list.css";
+import Userinfo from './userinfo/Userinfo';
 
 const List = () => {
   return (
@@ -12,4 +12,4 @@ const List = () => {
   )
 }
 
-export default List
+export default List;

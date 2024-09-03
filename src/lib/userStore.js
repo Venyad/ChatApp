@@ -21,6 +21,6 @@ export const useUserStore = create((set) => ({
         console.log(err)
         return set({currentUser:null, isLoading: false});
     }
-  }
-}))
+  },
+}));
 

@@ -54,7 +54,6 @@
 .detail .info .option .photos .photoItem .photoDetail{
     display: flex;
     align-items: center;
-    justify-content: space-between;
     gap: 20px;
  }
 
