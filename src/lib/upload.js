@@ -1,4 +1,4 @@
-import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { storage } from "./firebase";
 
 const upload = async (file) => {
@@ -18,11 +18,11 @@ const upload = async (file) => {
             },
             () => {
                 getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-                    resolve(downloadURL)
+                    resolve(downloadURL);
                 });
             }
-        )
+        );
     });
 
-}
+};
 export default upload
