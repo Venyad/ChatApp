@@ -53,12 +53,12 @@ const Chat = () => {
 
   };
   const handleSend = async () => {
-    if (text === "") return;
+    if (text === "" && !img.file) return;
 
     let imgUrl = null;
 
     try {
-      if(img.file){
+      if (img.file) {
         imgUrl = await upload(img.file);
       }
       await updateDoc(doc(db, "chats", chatId), {
@@ -67,7 +67,7 @@ const Chat = () => {
             senderId: currentUser.id,
             text,
             createdAt: new Date(),
-            ...(imgUrl && {img:imgUrl}),
+            ...(imgUrl && { img: imgUrl }),
 
           }
         ),
@@ -97,13 +97,13 @@ const Chat = () => {
     }
     catch (err) {
       console.log(err);
-    } finally{
-    setImg({
-      file:null,
-      url:""
-    });
-    setText("");
-  }
+    } 
+      setImg({
+        file: null,
+        url: ""
+      });
+      setText("");
+    
   };
 
   return (
@@ -137,7 +137,7 @@ const Chat = () => {
         ))}
         {img.url && (<div className="message own">
           <div className="texts">
-            <img src={img.url} alt="" />
+            <img src={img.url} alt="Preview attachment" />
           </div>
         </div>)}
         <div ref={endRef}></div>
@@ -148,15 +148,15 @@ const Chat = () => {
             <img src="/img.png" alt="" />
 
           </label>
-          <input type="file" id="file" style={{ display: "none" }}  onChange={handleImg}/>
+          <input type="file" id="file" style={{ display: "none" }} onChange={handleImg} />
           <img src="camera.png" alt="" />
           <img src="mic.png" alt="" />
         </div>
-        <input type="text" 
-        placeholder={(isCurrentUserBlocked || isReceiverBlocked) ? "You cannot send a message" : 'Type a message...' }
-        value={text} 
-        onChange={(e) => setText(e.target.value)} 
-        disabled={isCurrentUserBlocked || isReceiverBlocked} />
+        <input type="text"
+          placeholder={(isCurrentUserBlocked || isReceiverBlocked) ? "You cannot send a message" : 'Type a message...'}
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          disabled={isCurrentUserBlocked || isReceiverBlocked} />
         <div className='emoji'>
           <img src="./emoji.png" alt="" onClick={() => setOpen((prev) => !prev)} />
           <div className="picker">
